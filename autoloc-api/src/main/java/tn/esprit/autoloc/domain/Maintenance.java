@@ -25,6 +25,5 @@ public class Maintenance {
 
     private LocalDate dateFin;
 
-    @Column(length = 255)
     private String description;
 }
