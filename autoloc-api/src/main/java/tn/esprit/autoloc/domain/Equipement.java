@@ -8,11 +8,13 @@ import lombok.Setter;
 import java.util.HashSet;
 import java.util.Set;
 @Entity
+
 @Table(name = "equipement")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+
 public class Equipement {
 
     @Id
