@@ -1,5 +1,6 @@
 package tn.esprit.autoloc.domain;
 
+
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -27,6 +28,6 @@ public class Maintenance {
 
     private String description;
 
-    @ManyToOne (fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     private Vehicule vehicule;
 }
