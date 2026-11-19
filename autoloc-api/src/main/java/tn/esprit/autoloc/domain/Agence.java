@@ -30,10 +30,8 @@ public class Agence {
 
     @Column(length = 20)
     private String telephone;
-    @JsonIgnore
     @OneToMany (mappedBy = "agence" , fetch = FetchType.LAZY)
     private List<Vehicule> vehicules = new ArrayList<>();
-    @JsonIgnore
     @OneToMany (mappedBy = "agence", fetch = FetchType.LAZY)
     private List<Employe> employees = new ArrayList<>();
 }

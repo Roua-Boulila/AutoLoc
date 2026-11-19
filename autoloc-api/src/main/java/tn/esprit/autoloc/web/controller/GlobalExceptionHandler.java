@@ -8,6 +8,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import tn.esprit.autoloc.exception.ResourceNotFoundException;
+import java.util.LinkedHashMap;
+import org.springframework.validation.FieldError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
@@ -28,5 +31,18 @@ public class GlobalExceptionHandler {
                 "message", message,
                 "horodatage", LocalDateTime.now(ZoneId.of("Africa/Tunis")).toString());
         return ResponseEntity.status(statut).body(corps);
+    }
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<Map<String, Object>> handleValidation(MethodArgumentNotValidException ex) {
+        Map<String, String> erreurs = new LinkedHashMap<>();
+        for (FieldError erreur : ex.getBindingResult().getFieldErrors()) {
+            erreurs.putIfAbsent(erreur.getField(), erreur.getDefaultMessage());
+        }
+        Map<String, Object> corps = new LinkedHashMap<>();
+        corps.put("statut", 400);
+        corps.put("message", "Champs invalides");
+        corps.put("erreurs", erreurs);
+        corps.put("horodatage", LocalDateTime.now().toString());
+        return ResponseEntity.badRequest().body(corps);
     }
 }

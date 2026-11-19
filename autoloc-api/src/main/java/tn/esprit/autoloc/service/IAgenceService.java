@@ -2,6 +2,7 @@ package tn.esprit.autoloc.service;
 
 import java.util.List;
 import tn.esprit.autoloc.domain.Agence;
+import tn.esprit.autoloc.domain.Vehicule;
 
 public interface IAgenceService {
 
@@ -14,4 +15,6 @@ public interface IAgenceService {
     Agence update(Long id, Agence agence);
 
     void deleteById(Long id);
+
+    Vehicule affecterVehicule(Long agenceId, Long vehiculeId);
 }

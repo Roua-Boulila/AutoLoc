@@ -4,14 +4,18 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import tn.esprit.autoloc.domain.Agence;
+import tn.esprit.autoloc.domain.Vehicule;
 import tn.esprit.autoloc.exception.ResourceNotFoundException;
 import tn.esprit.autoloc.repository.IAgenceRepository;
+import tn.esprit.autoloc.repository.IVehiculeRepository;
 
 @Service
 @RequiredArgsConstructor
+
 public class AgenceServiceImpl implements IAgenceService {
 
     private final IAgenceRepository agenceRepository;
+    private final IVehiculeRepository vehiculeRepository;
 
     @Override
     public Agence create(Agence agence) {
@@ -63,5 +67,13 @@ public class AgenceServiceImpl implements IAgenceService {
         if (agence.getAdresse() == null || agence.getAdresse().isBlank()) {
             throw new IllegalArgumentException("L'adresse de l'agence est obligatoire");
         }
+    }
+    @Override
+    public Vehicule affecterVehicule(Long agenceId, Long vehiculeId) {
+        Agence agence = findById(agenceId);
+        Vehicule vehicule = vehiculeRepository.findById(vehiculeId)
+                .orElseThrow(() -> new ResourceNotFoundException("Vehicule", vehiculeId));
+        vehicule.setAgence(agence);
+        return vehiculeRepository.save(vehicule);
     }
 }
