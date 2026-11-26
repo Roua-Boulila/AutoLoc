@@ -1,10 +1,19 @@
 package tn.esprit.autoloc.web.dto;
 
-import tn.esprit.autoloc.domain.Equipement;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
-public record EquipementDTO(Long idEquipement, String libelle) {
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+public class EquipementDTO {
 
-    public static EquipementDTO from(Equipement equipement) {
-        return new EquipementDTO(equipement.getIdEquipement(), equipement.getLibelle());
-    }
+    private Long idEquipement;
+
+    @NotBlank(message = "Le libellé est obligatoire")
+    @Size(min = 2, max = 100, message = "Le libellé doit contenir entre 2 et 100 caractères")
+    private String libelle;
 }

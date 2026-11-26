@@ -5,6 +5,7 @@ import java.time.ZoneId;
 import java.util.Map;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import tn.esprit.autoloc.exception.ResourceNotFoundException;
@@ -42,7 +43,13 @@ public class GlobalExceptionHandler {
         corps.put("statut", 400);
         corps.put("message", "Champs invalides");
         corps.put("erreurs", erreurs);
-        corps.put("horodatage", LocalDateTime.now().toString());
+        corps.put("horodatage", LocalDateTime.now(ZoneId.of("Africa/Tunis")).toString());
         return ResponseEntity.badRequest().body(corps);
+    }
+
+    // JSON mal formé, énumération inconnue ou valeur numérique invalide
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    public ResponseEntity<Map<String, Object>> handleUnreadable(HttpMessageNotReadableException ex) {
+        return reponse(HttpStatus.BAD_REQUEST, "Corps de la requête invalide (JSON mal formé ou valeur incorrecte)");
     }
 }

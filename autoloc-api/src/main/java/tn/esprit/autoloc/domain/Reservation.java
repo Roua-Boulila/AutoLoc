@@ -1,5 +1,4 @@
 package tn.esprit.autoloc.domain;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -33,7 +32,6 @@ public class Reservation {
 
     @ManyToOne (fetch = FetchType.LAZY)
     private Vehicule vehicule;
-    @JsonIgnore
     @OneToOne (mappedBy = "reservation", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Contrat contrat;
 

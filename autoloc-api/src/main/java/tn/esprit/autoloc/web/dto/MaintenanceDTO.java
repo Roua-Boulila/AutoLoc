@@ -1,31 +1,34 @@
 package tn.esprit.autoloc.web.dto;
 
-
-
+import jakarta.validation.constraints.AssertTrue;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 import java.time.LocalDate;
-import tn.esprit.autoloc.domain.Maintenance;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
-public record MaintenanceDTO(
-        Long idMaintenance,
-        LocalDate dateDebut,
-        LocalDate dateFin,
-        String description,
-        Long idVehicule,
-        String immatriculationVehicule) {
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+public class MaintenanceDTO {
 
-    public static MaintenanceDTO from(Maintenance maintenance) {
-        Long idVehicule = null;
-        String immatriculation = null;
-        if (maintenance.getVehicule() != null) {
-            idVehicule = maintenance.getVehicule().getIdVehicule();
-            immatriculation = maintenance.getVehicule().getImmatriculation();
-        }
-        return new MaintenanceDTO(
-                maintenance.getIdMaintenance(),
-                maintenance.getDateDebut(),
-                maintenance.getDateFin(),
-                maintenance.getDescription(),
-                idVehicule,
-                immatriculation);
+    private Long idMaintenance;
+
+    @NotNull(message = "La date de début est obligatoire")
+    private LocalDate dateDebut;
+
+    @NotNull(message = "La date de fin est obligatoire")
+    private LocalDate dateFin;
+
+    @NotNull(message = "La description est obligatoire")
+    private String description;
+
+    @Positive(message = "L'identifiant du véhicule doit être positif")
+    private Long idVehicule;
+
+    @AssertTrue(message = "La date de fin ne peut pas être antérieure à la date de début")
+    public boolean isDatesValid() {
+        return dateDebut == null || dateFin == null || !dateFin.isBefore(dateDebut);
     }
 }

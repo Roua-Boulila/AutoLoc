@@ -4,76 +4,85 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import tn.esprit.autoloc.domain.Agence;
-import tn.esprit.autoloc.domain.Vehicule;
 import tn.esprit.autoloc.exception.ResourceNotFoundException;
+import tn.esprit.autoloc.mapper.IMapper;
 import tn.esprit.autoloc.repository.IAgenceRepository;
 import tn.esprit.autoloc.repository.IVehiculeRepository;
+import tn.esprit.autoloc.web.dto.AgenceDTO;
 
 @Service
 @RequiredArgsConstructor
-
 public class AgenceServiceImpl implements IAgenceService {
 
     private final IAgenceRepository agenceRepository;
     private final IVehiculeRepository vehiculeRepository;
+    private final IMapper agenceMapper;
 
     @Override
-    public Agence create(Agence agence) {
-        if (agence.getIdAgence() != null) {
+    public AgenceDTO create(AgenceDTO dto) {
+
+        if (dto.getIdAgence() != null) {
             throw new IllegalArgumentException(
-                    "Un nouveau agence ne doit pas avoir d'identifiant");
+                    "Nouvelle agence : l'identifiant doit être null");
         }
-        verifier(agence);
-        return agenceRepository.save(agence);
+
+        // Conversion DTO vers Entity
+        Agence agence = agenceMapper.toEntity(dto);
+
+        // Enregistrement
+        Agence saved = agenceRepository.save(agence);
+
+        // Conversion Entity vers DTO
+        return agenceMapper.toDto(saved);
     }
 
     @Override
-    public Agence findById(Long id) {
-        return agenceRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Agence", id));
+    public AgenceDTO findById(Long id) {
+
+        Agence agence = agenceRepository.findById(id)
+                .orElseThrow(() ->
+                        new ResourceNotFoundException("Agence", id));
+
+        return agenceMapper.toDto(agence);
     }
 
     @Override
-    public List<Agence> findAll() {
-        return agenceRepository.findAll();
+    public List<AgenceDTO> findAll() {
+
+        return agenceRepository.findAll()
+                .stream()
+                .map(agenceMapper::toDto)
+                .toList();
     }
 
     @Override
-    public Agence update(Long id, Agence agence) {
-        verifier(agence);
-        Agence existant = findById(id);
-        existant.setNom(agence.getNom());
-        existant.setVille(agence.getVille());
-        existant.setAdresse(agence.getAdresse());
-        existant.setTelephone(agence.getTelephone());
-        return agenceRepository.save(existant);
+    public AgenceDTO update(Long id, AgenceDTO dto) {
+
+        // Récupérer l'agence existante
+        Agence existant = agenceRepository.findById(id)
+                .orElseThrow(() ->
+                        new ResourceNotFoundException("Agence", id));
+
+        // Modifier les champs simples
+        existant.setNom(dto.getNom());
+        existant.setVille(dto.getVille());
+        existant.setAdresse(dto.getAdresse());
+        existant.setTelephone(dto.getTelephone());
+
+        // Sauvegarder les modifications
+        Agence updated = agenceRepository.save(existant);
+
+        return agenceMapper.toDto(updated);
     }
 
     @Override
     public void deleteById(Long id) {
+
         if (!agenceRepository.existsById(id)) {
             throw new ResourceNotFoundException("Agence", id);
         }
+
         agenceRepository.deleteById(id);
     }
 
-    private void verifier(Agence agence) {
-        if (agence.getNom() == null || agence.getNom().isBlank()) {
-            throw new IllegalArgumentException("Le nom de l'agence est obligatoire");
-        }
-        if (agence.getVille() == null || agence.getVille().isBlank()) {
-            throw new IllegalArgumentException("La ville de l'agence est obligatoire");
-        }
-        if (agence.getAdresse() == null || agence.getAdresse().isBlank()) {
-            throw new IllegalArgumentException("L'adresse de l'agence est obligatoire");
-        }
-    }
-    @Override
-    public Vehicule affecterVehicule(Long agenceId, Long vehiculeId) {
-        Agence agence = findById(agenceId);
-        Vehicule vehicule = vehiculeRepository.findById(vehiculeId)
-                .orElseThrow(() -> new ResourceNotFoundException("Vehicule", vehiculeId));
-        vehicule.setAgence(agence);
-        return vehiculeRepository.save(vehicule);
-    }
 }

@@ -1,36 +1,48 @@
 package tn.esprit.autoloc.web.dto;
 
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.PositiveOrZero;
+import jakarta.validation.constraints.Size;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 import java.math.BigDecimal;
-import java.util.List;
+import java.util.Set;
+
 import tn.esprit.autoloc.domain.CategorieVehicule;
 import tn.esprit.autoloc.domain.StatutVehicule;
-import tn.esprit.autoloc.domain.Vehicule;
 
-public record VehiculeDTO(
-        Long idVehicule,
-        String immatriculation,
-        String marque,
-        String modele,
-        CategorieVehicule categorie,
-        BigDecimal tarifJournalier,
-        StatutVehicule statut,
-        Long idAgence,
-        List<EquipementDTO> equipements) {
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+public class VehiculeDTO {
 
-    public static VehiculeDTO from(Vehicule vehicule) {
-        Long idAgence = vehicule.getAgence() != null ? vehicule.getAgence().getIdAgence() : null;
-        List<EquipementDTO> equipements = vehicule.getEquipements().stream()
-                .map(EquipementDTO::from)
-                .toList();
-        return new VehiculeDTO(
-                vehicule.getIdVehicule(),
-                vehicule.getImmatriculation(),
-                vehicule.getMarque(),
-                vehicule.getModele(),
-                vehicule.getCategorie(),
-                vehicule.getTarifJournalier(),
-                vehicule.getStatut(),
-                idAgence,
-                equipements);
-    }
+    private Long idVehicule;
+
+    @NotBlank(message = "L'immatriculation est obligatoire")
+    private String immatriculation;
+
+    @NotBlank(message = "La marque est obligatoire")
+    private String marque;
+
+    @NotBlank(message = "Le modèle est obligatoire")
+    private String modele;
+
+    @NotNull(message = "La catégorie du véhicule est obligatoire")
+    private CategorieVehicule categorie;
+
+    @NotNull(message = "Le tarif journalier est obligatoire")
+    @PositiveOrZero(message = "Le tarif journalier ne peut pas être négatif")
+    private BigDecimal tarifJournalier;
+
+    @NotNull(message = "Le statut du véhicule est obligatoire")
+    private StatutVehicule statut;
+
+    @Positive(message = "L'identifiant de l'agence doit être positif")
+    private Long idAgence;
+
+    private Set<EquipementDTO> equipements;
 }
