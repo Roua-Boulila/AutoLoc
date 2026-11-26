@@ -1,4 +1,5 @@
 package tn.esprit.autoloc.service;
+import tn.esprit.autoloc.repository.IVehiculeRepository;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -16,6 +17,7 @@ public class ContratServiceImpl implements IContratService {
 
     private final IContratRepository contratRepository;
     private final IReservationRepository reservationRepository;
+    private final IVehiculeRepository vehiculeRepository;
     private final IMapper contratMapper;
 
     @Override
@@ -96,5 +98,18 @@ public class ContratServiceImpl implements IContratService {
         }
 
         contratRepository.deleteById(id);
+    }
+
+    // Lister les contrats d'un véhicule (via ses réservations)
+    @Override
+    public List<ContratDTO> findByVehiculeId(Long idVehicule) {
+
+        if (!vehiculeRepository.existsById(idVehicule)) {
+            throw new ResourceNotFoundException("Vehicule", idVehicule);
+        }
+
+        return contratRepository.findByVehiculeId(idVehicule).stream()
+                .map(contratMapper::toDto)
+                .toList();
     }
 }

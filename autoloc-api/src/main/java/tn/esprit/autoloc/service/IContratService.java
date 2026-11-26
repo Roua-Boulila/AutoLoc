@@ -7,4 +7,7 @@ public interface IContratService {
     List<ContratDTO> findAll();
     ContratDTO update(Long id, ContratDTO contrat);
     void deleteById(Long id);
+
+    // Atelier 6 : requête personnalisée
+    List<ContratDTO> findByVehiculeId(Long idVehicule);
 }

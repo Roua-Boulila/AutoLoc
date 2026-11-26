@@ -128,4 +128,26 @@ public class VehiculeController {
                 vehiculeService.affecterEquipementAVehicule(
                         idVehicule, idEquipement));
     }
+
+    @GetMapping("/contrat/{idContrat}")
+    @Operation(summary = "Lister les véhicules d'un contrat")
+    @ApiResponse(responseCode = "200", description = "Liste récupérée avec succès")
+    @ApiResponse(responseCode = "404", description = "Contrat introuvable")
+    public ResponseEntity<List<VehiculeDTO>> afficherParContrat(
+            @Parameter(description = "Identifiant du contrat")
+            @PathVariable Long idContrat) {
+
+        return ResponseEntity.ok(vehiculeService.findByContratId(idContrat));
+    }
+
+    @GetMapping("/maintenance/{idMaintenance}")
+    @Operation(summary = "Lister les véhicules d'une maintenance")
+    @ApiResponse(responseCode = "200", description = "Liste récupérée avec succès")
+    @ApiResponse(responseCode = "404", description = "Maintenance introuvable")
+    public ResponseEntity<List<VehiculeDTO>> afficherParMaintenance(
+            @Parameter(description = "Identifiant de la maintenance")
+            @PathVariable Long idMaintenance) {
+
+        return ResponseEntity.ok(vehiculeService.findByMaintenanceId(idMaintenance));
+    }
 }

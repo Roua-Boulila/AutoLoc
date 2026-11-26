@@ -106,4 +106,15 @@ public class ContratController {
 
         return ResponseEntity.noContent().build();
     }
+
+    @GetMapping("/vehicule/{idVehicule}")
+    @Operation(summary = "Lister les contrats d'un véhicule")
+    @ApiResponse(responseCode = "200", description = "Liste récupérée avec succès")
+    @ApiResponse(responseCode = "404", description = "Véhicule introuvable")
+    public ResponseEntity<List<ContratDTO>> afficherParVehicule(
+            @Parameter(description = "Identifiant du véhicule")
+            @PathVariable Long idVehicule) {
+
+        return ResponseEntity.ok(contratService.findByVehiculeId(idVehicule));
+    }
 }

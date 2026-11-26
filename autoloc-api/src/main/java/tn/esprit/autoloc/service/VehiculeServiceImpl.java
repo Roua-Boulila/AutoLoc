@@ -1,5 +1,7 @@
 package tn.esprit.autoloc.service;
 
+import tn.esprit.autoloc.repository.IMaintenanceRepository;
+import tn.esprit.autoloc.repository.IContratRepository;
 import java.util.HashSet;
 import java.util.List;
 
@@ -23,6 +25,8 @@ public class VehiculeServiceImpl implements IVehiculeService {
     private final IVehiculeRepository vehiculeRepository;
     private final IAgenceRepository agenceRepository;
     private final IEquipementRepository equipementRepository;
+    private final IContratRepository contratRepository;
+    private final IMaintenanceRepository maintenanceRepository;
     private final IMapper vehiculeMapper;
 
     @Override
@@ -133,5 +137,31 @@ public class VehiculeServiceImpl implements IVehiculeService {
         }
 
         vehiculeRepository.deleteById(id);
+    }
+
+    // Lister les véhicules d'un contrat (via sa réservation)
+    @Override
+    public List<VehiculeDTO> findByContratId(Long idContrat) {
+
+        if (!contratRepository.existsById(idContrat)) {
+            throw new ResourceNotFoundException("Contrat", idContrat);
+        }
+
+        return vehiculeRepository.findByContratId(idContrat).stream()
+                .map(vehiculeMapper::toDto)
+                .toList();
+    }
+
+    // Lister les véhicules d'une maintenance
+    @Override
+    public List<VehiculeDTO> findByMaintenanceId(Long idMaintenance) {
+
+        if (!maintenanceRepository.existsById(idMaintenance)) {
+            throw new ResourceNotFoundException("Maintenance", idMaintenance);
+        }
+
+        return vehiculeRepository.findByMaintenanceId(idMaintenance).stream()
+                .map(vehiculeMapper::toDto)
+                .toList();
     }
 }

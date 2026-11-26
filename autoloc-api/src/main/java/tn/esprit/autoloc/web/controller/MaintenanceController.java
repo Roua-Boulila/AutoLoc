@@ -114,4 +114,15 @@ public class MaintenanceController {
                 )
         );
     }
+
+    @GetMapping("/vehicule/{idVehicule}")
+    @Operation(summary = "Lister les maintenances d'un véhicule")
+    @ApiResponse(responseCode = "200", description = "Liste récupérée avec succès")
+    @ApiResponse(responseCode = "404", description = "Véhicule introuvable")
+    public ResponseEntity<List<MaintenanceDTO>> afficherParVehicule(
+            @Parameter(description = "Identifiant du véhicule")
+            @PathVariable Long idVehicule) {
+
+        return ResponseEntity.ok(maintenanceService.findByVehiculeId(idVehicule));
+    }
 }

@@ -19,4 +19,9 @@ public interface IVehiculeService {
     VehiculeDTO affecterEquipementAVehicule(Long idVehicule, Long idEquipement);
 
     void deleteById(Long id);
+
+    // Atelier 6 : requêtes personnalisées
+    List<VehiculeDTO> findByContratId(Long idContrat);
+
+    List<VehiculeDTO> findByMaintenanceId(Long idMaintenance);
 }

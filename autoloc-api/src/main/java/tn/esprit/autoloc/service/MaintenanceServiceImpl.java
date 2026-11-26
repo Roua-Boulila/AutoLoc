@@ -100,4 +100,17 @@ public class MaintenanceServiceImpl implements IMaintenanceService {
 
         maintenanceRepository.deleteById(id);
     }
+
+    // Lister les maintenances d'un véhicule
+    @Override
+    public List<MaintenanceDTO> findByVehiculeId(Long idVehicule) {
+
+        if (!vehiculeRepository.existsById(idVehicule)) {
+            throw new ResourceNotFoundException("Vehicule", idVehicule);
+        }
+
+        return maintenanceRepository.findByVehiculeId(idVehicule).stream()
+                .map(maintenanceMapper::toDto)
+                .toList();
+    }
 }

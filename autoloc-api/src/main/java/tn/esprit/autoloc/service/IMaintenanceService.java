@@ -15,4 +15,7 @@ public interface IMaintenanceService {
     MaintenanceDTO affecterMaintenanceAVehicule(Long idMaintenance, Long idVehicule);
 
     void deleteById(Long id);
+
+    // Atelier 6 : requête personnalisée
+    List<MaintenanceDTO> findByVehiculeId(Long idVehicule);
 }
